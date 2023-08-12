@@ -27,7 +27,7 @@ func (l *bunyanLog) serialize(key string, value interface{}) interface{} {
 // prints a formatted string using the arguments provided
 func (l *bunyanLog) sprintf(args []interface{}) string {
 	if typeName(args[0]) != "string" {
-		return fmt.Sprintf("", args[0:]...)
+		return fmt.Sprint(args[0:]...)
 	}
 	return fmt.Sprintf(args[0].(string), args[1:]...)
 }
@@ -41,22 +41,21 @@ func (l *bunyanLog) write(stream Stream, level int) error {
 		return nil
 	}
 	d := make(map[string]interface{})
-	defaultKey:=l.logger.defaultKey
+	defaultKey := l.logger.defaultKey
 	d["v"] = 0
 	d["level"] = level
 	d["name"] = stream.Name
 	d["hostname"] = l.logger.hostname
 	d["pid"] = os.Getppid()
 	d["time"] = nowTimestamp()
-	d["details"]=make(map[string]map[string]string)
-	details:=make(map[string]map[string]interface{})
+	d["details"] = make(map[string]map[string]string)
+	details := make(map[string]map[string]interface{})
 	// add static fields first
 	for key, value := range l.logger.staticFields {
 		if canSetField(key) {
 			d[key] = l.serialize(key, value)
 		}
 	}
-
 
 	// add passed fields/data last
 	for _, element := range l.args {
@@ -65,11 +64,11 @@ func (l *bunyanLog) write(stream Stream, level int) error {
 			// if  argument that is a string, the string is the msg.
 			//returning concat string if string arguments more than one
 			var newMsg string
-			if d[defaultKey] !=nil {
-				newMsg = d[defaultKey].(string) +", " + element.(string)	
-			}else{
+			if d[defaultKey] != nil {
+				newMsg = d[defaultKey].(string) + ", " + element.(string)
+			} else {
 				newMsg = element.(string)
-			}			
+			}
 			d[defaultKey] = l.serialize(defaultKey, newMsg)
 		} else if isError(element) {
 			// if the  argument is an error, set error field with string value of error
@@ -84,17 +83,17 @@ func (l *bunyanLog) write(stream Stream, level int) error {
 		} else if isStruct(element) {
 			// get details with reflect value if the argumant is struct.
 			// If the struct is more than one, it returns the value with the struct name.
-			detail := getDetailsLog(element)			
-			for key,value:=range detail{		
-				details[key]=make(map[string]interface{})
-				details[key]=value.(map[string]interface{})
+			detail := getDetailsLog(element)
+			for key, value := range detail {
+				details[key] = make(map[string]interface{})
+				details[key] = value.(map[string]interface{})
 			}
 		} else {
-			d[defaultKey] = l.serialize(defaultKey, l.sprintf([]interface{}{d[defaultKey],element}))
+			d[defaultKey] = l.serialize(defaultKey, l.sprintf([]interface{}{d[defaultKey], element}))
 		}
 	}
 
-	d["details"]=details
+	d["details"] = details
 	// marshal the json
 	if jsonData, err := json.Marshal(d); err != nil {
 		return err
