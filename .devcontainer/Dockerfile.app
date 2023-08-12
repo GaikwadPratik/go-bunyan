@@ -1,4 +1,4 @@
-FROM gaikwadpratik/ubunutu-vscode-golang AS development
+FROM gaikwadpratik/ubuntu-vscode-golang AS development
 
 COPY [".devcontainer/testenv.sh","/usr/bin/testenv.sh"]
 
