@@ -1,0 +1,30 @@
+{
+  "name": "go-bunyan",
+  "dockerComposeFile": "./docker-compose.yml",
+  "service": "app",
+  "runServices": [
+    "app"
+  ],
+  "shutdownAction": "stopCompose",
+  "workspaceFolder": "/home/vscode/apphome",
+  "postStartCommand": "/usr/bin/testenv.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dawidd6.debian-vscode",
+        "DotJoshJohnson.xml",
+        "EditorConfig.EditorConfig",
+        "kisstkondoros.vscode-codemetrics",
+        "mads-hartmann.bash-ide-vscode",
+        "redhat.vscode-yaml",
+        "VisualStudioExptTeam.vscodeintellicode",
+        "wayou.vscode-todo-highlight",
+        "wix.vscode-import-cost",
+        "eamodio.gitlens",
+        "golang.go",
+        "joselitofilho.ginkgotestexplorer",
+        "ms-vscode.makefile-tools"
+      ]
+    }
+  }
+}

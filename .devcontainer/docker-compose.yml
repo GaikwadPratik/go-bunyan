@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  app:
+    container_name: gb-app-container
+    hostname: gb-app-container
+    build: 
+      context: ..
+      dockerfile: .devcontainer/Dockerfile.app
+      target: development
+      ssh:
+        - default
+    restart: unless-stopped
+    networks:
+      - ts-network
+    # env_file:
+    #   - ../.env
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - ../:/home/vscode/apphome
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+
+networks:
+  ts-network:
+    enable_ipv6: false
